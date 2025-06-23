@@ -4,7 +4,7 @@
   * Основной сервис: Nest.js
   * Модуль расчётов: Express
 * База данных: PostgreSQL
-* Развертывание: Docker Compose, Nginx
+* Развертывание: Docker Compose
 
 ### Требования к системе
 
