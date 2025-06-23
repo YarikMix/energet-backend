@@ -78,6 +78,19 @@ services:
     environment:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
+    entrypoint: >
+      /bin/sh -c '
+        isAlive() { curl -sf http://minio:9000/minio/health/live; }          # check if Minio is alive
+        minio $0 "$@" --quiet & echo $! > /tmp/minio.pid                     # start Minio in the background
+        until isAlive; do sleep 1; done                                      # wait until Minio is alive
+        echo "MinIO is ready. Proceeding with setup..."
+        mc alias set myminio http://minio:9000 minio minio123                # setup Minio client
+        mc mb myminio/images/ --ignore-existing                              # create test bucket
+        mc anonymous set public myminio/images                               # make the test bucket public
+        kill -s INT $(cat /tmp/minio.pid) && rm /tmp/minio.pid               # stop Minio
+        while isAlive; do sleep 0.1; done                                    # wait until Minio is stopped
+        exec minio $0 "$@"                                                   # start Minio in the foreground
+      '
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 5s
@@ -86,17 +99,17 @@ services:
     volumes:
       - minio-data:/data
 
-  createbucket:
-    image: minio/mc:latest
-    container_name: createbucket
-    depends_on:
-      - minio
-    entrypoint: >
-      /bin/sh -c "
-      /usr/bin/mc config host add --api s3v4 s3 http://minio:9000 minio minio123;
-      /usr/bin/mc mb s3/images;
-      /usr/bin/mc anonymous set public s3/images;
-      "
+#  createbucket:
+#    image: minio/mc:latest
+#    container_name: createbucket
+#    depends_on:
+#      - minio
+#    entrypoint: >
+#      /bin/sh -c "
+#      /usr/bin/mc config host add --api s3v4 s3 http://minio:9000 minio minio123;
+#      /usr/bin/mc mb s3/images;
+#      /usr/bin/mc anonymous set public s3/images;
+#      "
 
 volumes:
   postgres:
