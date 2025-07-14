@@ -41,9 +41,9 @@ services:
   postgres:
     image: postgres:15.0
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
       PGDATA: /data/postgres
     volumes:
        - postgres:/var/www/postgres/docker-volumes/postgres
@@ -56,19 +56,6 @@ services:
       timeout: 5s
       retries: 5
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: postgres@admin.com
-      PGADMIN_DEFAULT_PASSWORD: postgres
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
-    volumes:
-       - pgadmin:/var/www/postgres/docker-volumes/pgadmin
-    ports:
-      - "127.0.0.1:5050:80"
-    restart: unless-stopped
-
   minio:
     image: minio/minio:latest
     command: server --console-address ":9001" /data/
@@ -80,17 +67,17 @@ services:
       MINIO_SECRET_KEY: minio123
     entrypoint: >
       /bin/sh -c '
-        isAlive() { curl -sf http://minio:9000/minio/health/live; }          # check if Minio is alive
-        minio $0 "$@" --quiet & echo $! > /tmp/minio.pid                     # start Minio in the background
-        until isAlive; do sleep 1; done                                      # wait until Minio is alive
+        isAlive() { curl -sf http://minio:9000/minio/health/live; }
+        minio $$0 "$$@" --quiet & echo $$! > /tmp/minio.pid
+        until isAlive; do sleep 1; done
         echo "MinIO is ready. Proceeding with setup..."
-        mc alias set myminio http://minio:9000 minio minio123                # setup Minio client
-        mc mb myminio/images/ --ignore-existing                              # create test bucket
-        mc anonymous set public myminio/images                               # make the test bucket public
-        kill -s INT $(cat /tmp/minio.pid) && rm /tmp/minio.pid               # stop Minio
-        while isAlive; do sleep 0.1; done                                    # wait until Minio is stopped
-        exec minio $0 "$@"                                                   # start Minio in the foreground
-      '
+        mc alias set myminio http://minio:9000 minio minio123
+        mc mb myminio/images/ --ignore-existing
+        mc anonymous set public myminio/images
+        kill -s INT $$(cat /tmp/minio.pid) && rm /tmp/minio.pid
+        while isAlive; do sleep 0.1; done
+        exec minio $$0 "$$@"
+        '
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 5s
@@ -98,18 +85,6 @@ services:
       retries: 3
     volumes:
       - minio-data:/data
-
-#  createbucket:
-#    image: minio/mc:latest
-#    container_name: createbucket
-#    depends_on:
-#      - minio
-#    entrypoint: >
-#      /bin/sh -c "
-#      /usr/bin/mc config host add --api s3v4 s3 http://minio:9000 minio minio123;
-#      /usr/bin/mc mb s3/images;
-#      /usr/bin/mc anonymous set public s3/images;
-#      "
 
 volumes:
   postgres:
