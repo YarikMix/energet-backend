@@ -1,3 +1,5 @@
+import { ItemsFiltersDto } from '@entities/items/dto/filters.dto';
+import { PaginationDto } from '@entities/items/dto/pagination.dto';
 import {
   BadRequestException,
   Body,
@@ -9,6 +11,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UploadedFile,
@@ -43,8 +46,12 @@ export class ItemsController {
 
   @Public()
   @Get('/')
-  searchItems(@Req() req, @Res() res) {
-    return res.status(HttpStatus.OK).json({});
+  searchItems(
+    @Req() req,
+    @Query() params: PaginationDto & ItemsFiltersDto,
+    @User() user,
+  ) {
+    return this.itemsService.search({ ...params, userId: user?.id });
   }
 
   @Public()
