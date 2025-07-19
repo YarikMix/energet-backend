@@ -27,33 +27,40 @@ jobs:
             sudo docker compose build || exit 1
             sudo docker compose up -d || exit 1
 
-#      - name: Отправка в тг чат сообщения если пайплайн упал
-#        if: failure()
-#        uses: appleboy/telegram-action@master
-#        with:
-#          to: ${{ secrets.TELEGRAM_TO }}
-#          token: ${{ secrets.TELEGRAM_TOKEN }}
-#          message: |
-#            ❗ Произошла ошибка во время деплоя
-#
-#            🔗 Ссылка на пайплайн 🔗
-#            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - name: Отправка в тг чат сообщения если пайплайн упал
+        if: failure()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ❗ Произошла ошибка во время деплоя
+
+            🔗 Ссылка на пайплайн 🔗
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Send Telegram Message
         if: failure()
+        env:
+          message: |
+            ❗ Произошла ошибка во время деплоя
+            
+            🔗 Ссылка на пайплайн 🔗
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          msg_text='Your message text here'
+          msg_text='$message'
           curl -s -X POST 'https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage' \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${msg_text}&reply_to_message_id=${{ secrets.TELEGRAM_TOPIC_ID }}"
 
-#      - name: Отправка в тг чат сообщения если пайплайн завершился успешно
-#        if: success()
-#        uses: appleboy/telegram-action@master
-#        with:
-#          to: ${{ secrets.TELEGRAM_TO }}
-#          token: ${{ secrets.TELEGRAM_TOKEN }}
-#          message: |
-#            ✅ Изменения успешно задеплоены
-#
-#            🔗 Ссылка на прод 🔗
-#            ${{ secrets.PRODUCTION_URL || 'Отсутствует' }}
+      - name: Send Telegram Message
+        if: success()
+        env:
+          message: |
+            ✅ Изменения успешно задеплоены
+
+            🔗 Ссылка на прод 🔗
+            ${{ secrets.PRODUCTION_URL || 'Отсутствует' }}
+        run: |
+          msg_text='$message'
+          curl -s -X POST 'https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage' \
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${msg_text}&reply_to_message_id=${{ secrets.TELEGRAM_TOPIC_ID }}"
