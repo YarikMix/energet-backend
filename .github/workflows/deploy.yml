@@ -18,7 +18,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo chown -R ${{ secrets.SSH_USERNAME }} /home/energet/energet-backend/
+            chown -R ${{ secrets.SSH_USERNAME }} /home/energet/energet-backend/
             git config --global --add safe.directory /home/energet/energet-backend/
             cd /home/energet/energet-backend/
             sudo docker compose down || exit 1
@@ -30,15 +30,14 @@ jobs:
       - name: Send Telegram Message
         if: failure()
         env:
-          message: |
+          MESSAGE: |
             ❗ Произошла ошибка во время деплоя
             
             🔗 Ссылка на пайплайн 🔗
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          msg_text='$message'
           curl -s -X POST 'https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage' \
-          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${msg_text}&reply_to_message_id=${{ secrets.TELEGRAM_TOPIC_ID }}"
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=$MESSAGE&reply_to_message_id=${{ secrets.TELEGRAM_TOPIC_ID }}"
 
       - name: Send Telegram Message
         if: success()
