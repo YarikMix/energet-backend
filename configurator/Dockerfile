@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:22.17.0
 
 # Create app directory, this is in our container/in our image
 WORKDIR /app/configurator
