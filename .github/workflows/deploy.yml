@@ -38,7 +38,6 @@ jobs:
 #            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Send Telegram Message
-        if: failure()
         run: |
           msg_text='Your message text here'
           curl -s -X POST 'https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage' \
