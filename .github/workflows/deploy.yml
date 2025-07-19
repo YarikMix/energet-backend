@@ -13,9 +13,10 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
+          port:  ${{ secrets.SSH_PORT }}
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "sadf"
 
@@ -25,6 +26,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          topic_id: '${{ secrets.TELEGRAM_TOPIC_ID }}'
           message: |
             ❗ Произошла ошибка во время деплоя
             
@@ -37,6 +39,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          topic_id: '${{ secrets.TELEGRAM_TOPIC_ID }}'
           message: |
             ✅ Изменения успешно задеплоены
             
