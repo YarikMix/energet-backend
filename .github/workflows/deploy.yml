@@ -18,7 +18,14 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ener234234get/energet-backend/
+            sudo chown -R ${{ secrets.SSH_USERNAME }} /home/energet/energet-backend/
+            git config --global --add safe.directory /home/energet/energet-backend/
+            cd /home/energet/energet-backend/
+            sudo docker compose down || exit 1
+            git checkout ${{ github.ref_name }} || exit 1
+            sudo git pull || exit 1
+            sudo docker compose build || exit 1
+            sudo docker compose up -d || exit 1
 
       - name: Send Telegram Message
         if: failure()
