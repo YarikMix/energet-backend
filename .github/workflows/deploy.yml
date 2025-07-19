@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - name: Checkout репозитория
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@master
 
       - name: Deploy to server
         uses: appleboy/ssh-action@master
@@ -16,8 +16,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-        script: |
-          echo "sadf"
+          script: |
+            echo "sadf"
 
       - name: Отправка в тг чат сообщения если пайплайн упал
         if: failure()
