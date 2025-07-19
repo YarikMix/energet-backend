@@ -18,7 +18,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            chown -R ${{ secrets.SSH_USERNAME }} /home/energet/energet-backend/
+            sudo chown -R ${{ secrets.SSH_USERNAME }} /home/energet/energet-backend/
             git config --global --add safe.directory /home/energet/energet-backend/
             cd /home/energet/energet-backend/
             sudo docker compose down || exit 1
