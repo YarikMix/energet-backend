@@ -7,9 +7,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout репозитория
-        uses: actions/checkout@master
-
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
