@@ -18,30 +18,41 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "sadf"
+            sudo chown -R ubuntu:ubuntu /home/energet/energet-backend/
+            git config --global --add safe.directory /home/energet/energet-backend/
+            cd /home/energet/energet-backend/
+            sudo docker compose down || exit 1
+            git checkout ${{ github.ref_name }} || exit 1
+            sudo git pull || exit 1
+            sudo docker compose build || exit 1
+            sudo docker compose up -d || exit 1
 
-      - name: Отправка в тг чат сообщения если пайплайн упал
-        if: failure()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          topic_id: '${{ secrets.TELEGRAM_TOPIC_ID }}'
-          message: |
-            ❗ Произошла ошибка во время деплоя
-            
-            🔗 Ссылка на пайплайн 🔗
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#      - name: Отправка в тг чат сообщения если пайплайн упал
+#        if: failure()
+#        uses: appleboy/telegram-action@master
+#        with:
+#          to: ${{ secrets.TELEGRAM_TO }}
+#          token: ${{ secrets.TELEGRAM_TOKEN }}
+#          message: |
+#            ❗ Произошла ошибка во время деплоя
+#
+#            🔗 Ссылка на пайплайн 🔗
+#            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-      - name: Отправка в тг чат сообщения если пайплайн завершился успешно
-        if: success()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          topic_id: '${{ secrets.TELEGRAM_TOPIC_ID }}'
-          message: |
-            ✅ Изменения успешно задеплоены
-            
-            🔗 Ссылка на прод 🔗
-            ${{ secrets.PRODUCTION_URL || 'Отсутствует' }}
+      - name: Send Telegram Message
+        run: |
+          msg_text='Your message text here'
+          curl -s -X POST 'https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage' \
+          -d "chat_id=${{ secrets.TELEGRAM_TO }}&text=${msg_text}&reply_to_message_id=${{ secrets.TELEGRAM_TOPIC_ID }}"
+
+#      - name: Отправка в тг чат сообщения если пайплайн завершился успешно
+#        if: success()
+#        uses: appleboy/telegram-action@master
+#        with:
+#          to: ${{ secrets.TELEGRAM_TO }}
+#          token: ${{ secrets.TELEGRAM_TOKEN }}
+#          message: |
+#            ✅ Изменения успешно задеплоены
+#
+#            🔗 Ссылка на прод 🔗
+#            ${{ secrets.PRODUCTION_URL || 'Отсутствует' }}
