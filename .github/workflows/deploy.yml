@@ -1,0 +1,44 @@
+name: Deploy Frontend
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout репозитория
+        uses: actions/checkout@v4.2.2
+
+      - name: Деплой на сервер
+        env:
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          echo "$SERVER_SSH_KEY" > key.pem
+          chmod 600 key.pem
+          ssh -o StrictHostKeyChecking=no -i key.pem deploy@178.130.49.68 'rm -rf home/energet/energet-backend/*'
+          scp -o StrictHostKeyChecking=no -i key.pem -r ./* deploy@178.130.49.68:/home/energet/energet-backend/
+
+      - name: Отправка в тг чат сообщения если пайплайн упал
+        if: failure()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ❗ Произошла ошибка во время деплоя
+            
+            🔗 Ссылка на пайплайн 🔗
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Отправка в тг чат сообщения если пайплайн завершился успешно
+        if: success()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ✅ Изменения успешно задеплоены
+            
+            🔗 Ссылка на прод 🔗
+            ${{ secrets.PRODUCTION_URL || 'Отсутствует' }}
