@@ -87,7 +87,7 @@ export class ItemsController {
   }
 
   @Put('/:id/update_image/')
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   @UseInterceptors(FileInterceptor('image') as Function)
   async updateImage(
     @Param('id', ParseIntPipe) id: number,
