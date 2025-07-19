@@ -10,20 +10,20 @@ jobs:
       - name: Checkout репозитория
         uses: actions/checkout@master
 
-#      - name: Deploy to server
-#        uses: appleboy/ssh-action@master
-#        with:
-#          port:  ${{ secrets.SSH_PORT }}
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ${{ secrets.SSH_USERNAME }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          script: |
-#            cd /home/energet/energet-backend/
-#            sudo docker compose down || exit 1
-#            git checkout ${{ github.ref_name }} || exit 1
-#            sudo git pull || exit 1
-#            sudo docker compose build || exit 1
-#            sudo docker compose up -d || exit 1
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          port:  ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/energet/energet-backend/
+            sudo docker compose down || exit 1
+            git checkout ${{ github.ref_name }} || exit 1
+            sudo git pull || exit 1
+            sudo docker compose build || exit 1
+            sudo docker compose up -d || exit 1
 
 #      - name: Отправка в тг чат сообщения если пайплайн упал
 #        if: failure()
@@ -38,10 +38,11 @@ jobs:
 #            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Send Telegram Message
+        if: failure()
         run: |
           msg_text='Your message text here'
           curl -s -X POST 'https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage' \
-          -d "chat_id=${{ secrets.TELEGRAM_TO }}&text=${msg_text}&reply_to_message_id=${{ secrets.TELEGRAM_TOPIC_ID }}"
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${msg_text}&reply_to_message_id=${{ secrets.TELEGRAM_TOPIC_ID }}"
 
 #      - name: Отправка в тг чат сообщения если пайплайн завершился успешно
 #        if: success()
