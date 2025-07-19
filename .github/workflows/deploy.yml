@@ -10,14 +10,14 @@ jobs:
       - name: Checkout репозитория
         uses: actions/checkout@v4.2.2
 
-      - name: Деплой на сервер
-        env:
-          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
-        run: |
-          echo "$SERVER_SSH_KEY" > key.pem
-          chmod 600 key.pem
-          ssh -o StrictHostKeyChecking=no -i key.pem deploy@178.130.49.68 'rm -rf home/energet/energet-backend/*'
-          scp -o StrictHostKeyChecking=no -i key.pem -r ./* deploy@178.130.49.68:/home/energet/energet-backend/
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          echo "sadf"
 
       - name: Отправка в тг чат сообщения если пайплайн упал
         if: failure()
