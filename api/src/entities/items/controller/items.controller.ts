@@ -43,8 +43,8 @@ export class ItemsController {
 
   @Public()
   @Get('/')
-  searchItems(@Req() req) {
-    return req.status(HttpStatus.OK).json({});
+  searchItems(@Req() req, @Res() res) {
+    return res.status(HttpStatus.OK).json({});
   }
 
   @Public()
@@ -55,7 +55,7 @@ export class ItemsController {
   }
 
   @Post('/')
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   @UseInterceptors(FileInterceptor('image') as Function)
   async create(
     @User() owner,
