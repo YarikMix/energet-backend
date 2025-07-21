@@ -90,28 +90,25 @@ services:
     volumes:
       - minio-data:/data
 
-#  nginx:
-#    image: nginx:latest
-#    container_name: nginx
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    volumes:
-#      - ./nginx.conf:/etc/nginx/nginx.conf
-#      - /home/ubuntu/deploy_user/tp_code/frontend:/usr/share/nginx/html
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
-#      - /home/ubuntu/deploy_user/tp_code/images_user/:${USER_IMAGE_BASE_PATH}
-#      - /home/ubuntu/deploy_user/tp_code/images_restaurant/:${RESTAURANT_IMAGE_BASE_PATH}
-#    depends_on:
-#      main:
-#        condition: service_started
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/sites-enabled/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      api:
+        condition: service_started
 
   telegram-notifier:
     env_file:
       - .env
     image: lorcas/docker-telegram-notifier:latest
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro # for local instance
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       TELEGRAM_NOTIFIER_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_NOTIFIER_CHAT_ID: ${TELEGRAM_CHAT_ID}
