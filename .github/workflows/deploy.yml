@@ -3,7 +3,7 @@ name: Deploy Frontend
 on: [push]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,7 +14,7 @@ jobs:
           chat_id: '${{ secrets.TELEGRAM_CHAT_ID }}'
           topic_id: '${{ secrets.TELEGRAM_TOPIC_ID }}'
 
-      - name: Deploy to server
+      - name: Pull code
         uses: appleboy/ssh-action@master
         with:
           port:  ${{ secrets.SSH_PORT }}
@@ -23,10 +23,32 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/energet/energet-backend/
-            sudo docker compose down || exit 1
             git checkout ${{ github.ref_name }} || exit 1
             sudo git pull || exit 1
-            sudo docker compose build || exit 1
+
+      - name: Build containers
+        uses: appleboy/ssh-action@master
+        with:
+          timeout: 200m
+          command_timeout: 200m
+          port:  ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/energet/energet-backend/
+            sudo docker compose build
+
+      - name: Restart service
+        uses: appleboy/ssh-action@master
+        with:
+          port:  ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/energet/energet-backend/
+            sudo docker compose up down || exit 1
             sudo docker compose up -d || exit 1
 
       - name: Send Telegram Message
