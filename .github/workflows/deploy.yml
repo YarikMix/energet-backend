@@ -35,7 +35,7 @@ jobs:
           script: |
             cd /home/energet/energet-backend/
             sudo docker compose down || exit 1
-            sudo docker compose up --build || exit 1
+            sudo docker compose up --build -d || exit 1
 
       - name: Send Telegram Message
         if: failure()
