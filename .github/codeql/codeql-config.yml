@@ -1,0 +1,5 @@
+name: JavaScript CodeQL Configuration
+
+paths-ignore:
+  - api/node_modules
+  - configurator/node_modules
