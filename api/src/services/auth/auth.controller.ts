@@ -9,16 +9,21 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
+import { HttpService } from '@nestjs/axios';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@services/auth/decorators/user.decorator';
 import { Response } from 'express';
+import { firstValueFrom } from 'rxjs';
 import { Public } from './decorators/public.decorator';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 
 @Public()
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private readonly httpService: HttpService,
+  ) {}
 
   @UseGuards(AuthGuard('local'))
   @Post('/login')
@@ -72,6 +77,21 @@ export class AuthController {
 
   @Post('/vk')
   async authVK(@Res({ passthrough: true }) res) {
-    console.log(res.body);
+    console.log('authVK');
+    console.log(JSON.stringify(res.body));
+    console.log(JSON.stringify(process.env));
+
+    const VKDATA = {
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+    };
+
+    const data = await firstValueFrom(
+      await this.httpService.get(
+        `https://oauth.vk.com/access_token?client_id=${VKDATA.client_id}&client_secret=${VKDATA.client_secret}&redirect_uri=${'https://energet.shop'}/signin&code=${res.body.code}`,
+      ),
+    );
+
+    console.log('data', JSON.stringify(data));
   }
 }

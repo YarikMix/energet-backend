@@ -1,4 +1,5 @@
 import { UsersModule } from '@entities/user/user.module';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -24,6 +25,7 @@ import { LocalStrategy } from './strategy/local.strategy';
       }),
       inject: [ConfigService],
     }),
+    HttpModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
