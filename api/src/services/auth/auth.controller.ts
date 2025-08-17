@@ -11,7 +11,6 @@ import { AuthService } from './auth.service';
 
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@services/auth/decorators/user.decorator';
-import * as VKID from '@vkid/sdk';
 import { Response } from 'express';
 import { Public } from './decorators/public.decorator';
 import { RegisterRequestDto } from './dtos/register-request.dto';
@@ -74,11 +73,5 @@ export class AuthController {
   @Post('/vk')
   async authVK(@Res({ passthrough: true }) res) {
     console.log(res.body);
-    const test = await VKID.Auth.exchangeCode(
-      res.body.code,
-      res.body.device_id,
-      'codeVerifier',
-    );
-    console.log(test);
   }
 }
