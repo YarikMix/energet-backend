@@ -89,6 +89,7 @@ export class AuthController {
       ),
     );
 
-    console.log('data', JSON.stringify(data));
+    console.log('status', JSON.stringify(data.status));
+    console.log('data', JSON.stringify(data.data));
   }
 }
