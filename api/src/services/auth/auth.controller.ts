@@ -75,15 +75,6 @@ export class AuthController {
   @Post('/vk')
   async authVK(@Res({ passthrough: true }) res, @Req() req) {
     console.log(req.data);
-
-    VKID.Config.init({
-      app: 54052810,
-      redirectUrl: 'https://energet.shop',
-      state: 'state',
-      codeVerifier: 'codeVerifier',
-      scope: 'phone email',
-    });
-
     const test = await VKID.Auth.exchangeCode(
       req.body.code,
       req.body.deviceId,
