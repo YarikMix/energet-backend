@@ -3,7 +3,6 @@ import {
   Controller,
   HttpStatus,
   Post,
-  Req,
   Request,
   Res,
   UseGuards,
@@ -72,12 +71,13 @@ export class AuthController {
     res.clearCookie('access_token');
   }
 
+  @Public()
   @Post('/vk')
-  async authVK(@Res({ passthrough: true }) res, @Req() req) {
-    console.log(req.data);
+  async authVK(@Res({ passthrough: true }) res) {
+    console.log(res.body);
     const test = await VKID.Auth.exchangeCode(
-      req.body.code,
-      req.body.device_id,
+      res.body.code,
+      res.body.device_id,
       'codeVerifier',
     );
     console.log(test);
