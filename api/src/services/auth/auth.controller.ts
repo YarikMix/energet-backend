@@ -84,7 +84,7 @@ export class AuthController {
     console.log(process.env.CLIENT_ID);
 
     const data = await firstValueFrom(
-      await this.httpService.get(
+      this.httpService.get(
         `https://id.vk.com/oauth2/auth?grant_type=authorization_code&code_verifier=codeVerifier&client_id=${process.env.CLIENT_ID}&device_id=${req.body.deviceId}&redirect_uri=https://energet.shop&code=${req.body.code}`,
       ),
     );
