@@ -79,14 +79,16 @@ export class AuthController {
   @Post('/vk')
   async authVK(@Res({ passthrough: true }) res, @Req() req) {
     console.log('authVK');
-    console.log(JSON.stringify(req.body));
-    console.log(JSON.stringify(process.env));
-    console.log(process.env.CLIENT_ID);
 
     const data = await firstValueFrom(
-      this.httpService.get(
-        `https://id.vk.com/oauth2/auth?grant_type=authorization_code&code_verifier=codeVerifier&client_id=${process.env.CLIENT_ID}&device_id=${req.body.deviceId}&redirect_uri=https://energet.shop&code=${req.body.code}`,
-      ),
+      this.httpService.post('https://id.vk.com/oauth2/auth', {
+        grant_type: 'authorization_code',
+        code_verifier: 'codeVerifier',
+        client_id: process.env.CLIENT_ID,
+        device_id: req.body.deviceId,
+        redirect_uri: process.env.REDIRECT_URI,
+        code: req.body.code,
+      }),
     );
 
     console.log('status', JSON.stringify(data.status));
