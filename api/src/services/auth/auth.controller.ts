@@ -77,7 +77,7 @@ export class AuthController {
     console.log(req.data);
     const test = await VKID.Auth.exchangeCode(
       req.body.code,
-      req.body.deviceId,
+      req.body.device_id,
       'codeVerifier',
     );
     console.log(test);
