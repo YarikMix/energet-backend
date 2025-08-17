@@ -3,6 +3,7 @@ import {
   Controller,
   HttpStatus,
   Post,
+  Req,
   Request,
   Res,
   UseGuards,
@@ -76,19 +77,15 @@ export class AuthController {
   }
 
   @Post('/vk')
-  async authVK(@Res({ passthrough: true }) res) {
+  async authVK(@Res({ passthrough: true }) res, @Req() req) {
     console.log('authVK');
-    console.log(JSON.stringify(res.body));
+    console.log(JSON.stringify(req.body));
     console.log(JSON.stringify(process.env));
-
-    const VKDATA = {
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-    };
+    console.log(process.env.CLIENT_ID);
 
     const data = await firstValueFrom(
       await this.httpService.get(
-        `https://oauth.vk.com/access_token?client_id=${VKDATA.client_id}&client_secret=${VKDATA.client_secret}&redirect_uri=${'https://energet.shop'}/signin&code=${res.body.code}`,
+        `https://id.vk.com/oauth2/auth?grant_type=authorization_code&code_verifier=codeVerifier&client_id=${process.env.CLIENT_ID}&device_id=${req.body.deviceId}&redirect_uri=https://energet.shop&code=${req.body.code}`,
       ),
     );
 
