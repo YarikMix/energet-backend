@@ -71,6 +71,7 @@ export class AuthController {
     res.clearCookie('access_token');
   }
 
+  @Public()
   @Post('/vk')
   async authVK(@Res({ passthrough: true }) res) {
     console.log(res.body);
