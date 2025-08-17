@@ -10,10 +10,10 @@ import {
 import { AuthService } from './auth.service';
 
 import { AuthGuard } from '@nestjs/passport';
-import { RegisterRequestDto } from './dtos/register-request.dto';
-import { Public } from './decorators/public.decorator';
-import { Response } from 'express';
 import { User } from '@services/auth/decorators/user.decorator';
+import { Response } from 'express';
+import { Public } from './decorators/public.decorator';
+import { RegisterRequestDto } from './dtos/register-request.dto';
 
 @Public()
 @Controller('auth')
@@ -68,5 +68,10 @@ export class AuthController {
   @Post('/logout')
   async logout(@Res({ passthrough: true }) res) {
     res.clearCookie('access_token');
+  }
+
+  @Post('/vk')
+  async authVK(@Res({ passthrough: true }) res) {
+    console.log(res.body);
   }
 }
