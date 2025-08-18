@@ -98,7 +98,7 @@ export class AuthController {
     console.log('access_token', access_token);
 
     const response2 = await firstValueFrom(
-      this.httpService.post('https://id.vk.com/oauth2/auth', {
+      this.httpService.post('https://id.vk.com/oauth2/public_info', {
         client_id: process.env.CLIENT_ID,
         id_token: access_token,
       }),
