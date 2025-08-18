@@ -58,11 +58,7 @@ export class AuthController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('/check')
-  async check(
-    @Request() req,
-    @Res({ passthrough: true }) res: Response,
-    @User() user,
-  ) {
+  async check(@Res({ passthrough: true }) res: Response, @User() user) {
     if (user) {
       const userInfo = await this.authService.getUserInfo(user.email);
       res.status(HttpStatus.OK).send(userInfo);
@@ -78,8 +74,6 @@ export class AuthController {
 
   @Post('/vk')
   async authVK(@Res({ passthrough: true }) res, @Req() req) {
-    console.log('authVK');
-
     const response = await firstValueFrom(
       this.httpService.post('https://id.vk.com/oauth2/auth', {
         grant_type: 'authorization_code',
@@ -92,20 +86,12 @@ export class AuthController {
       }),
     );
 
-    console.log('response1 status', JSON.stringify(response.status));
-    console.log('response1 data', JSON.stringify(response.data));
-
     const access_token = response.data.access_token;
-    console.log('access_token', access_token);
-
-    const response2 = await firstValueFrom(
+    await firstValueFrom(
       this.httpService.post('https://id.vk.com/oauth2/user_info', {
         client_id: process.env.CLIENT_ID,
         access_token,
       }),
     );
-
-    console.log('response2 status', JSON.stringify(response2.status));
-    console.log('response2 data', JSON.stringify(response2.data));
   }
 }
