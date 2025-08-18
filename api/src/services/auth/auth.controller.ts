@@ -88,19 +88,20 @@ export class AuthController {
         device_id: req.body.deviceId,
         redirect_uri: process.env.REDIRECT_URI,
         code: req.body.code,
+        scope: 'phone',
       }),
     );
 
     console.log('response1 status', JSON.stringify(response.status));
     console.log('response1 data', JSON.stringify(response.data));
 
-    const id_token = response.data.id_token;
-    console.log('id_token', id_token);
+    const access_token = response.data.access_token;
+    console.log('access_token', access_token);
 
     const response2 = await firstValueFrom(
-      this.httpService.post('https://id.vk.com/oauth2/public_info', {
+      this.httpService.post('https://id.vk.com/oauth2/user_info', {
         client_id: process.env.CLIENT_ID,
-        id_token,
+        access_token,
       }),
     );
 
