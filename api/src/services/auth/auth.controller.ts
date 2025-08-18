@@ -80,7 +80,7 @@ export class AuthController {
   async authVK(@Res({ passthrough: true }) res, @Req() req) {
     console.log('authVK');
 
-    const data = await firstValueFrom(
+    const response = await firstValueFrom(
       this.httpService.post('https://id.vk.com/oauth2/auth', {
         grant_type: 'authorization_code',
         code_verifier: 'codeVerifier',
@@ -91,7 +91,20 @@ export class AuthController {
       }),
     );
 
-    console.log('status', JSON.stringify(data.status));
-    console.log('data', JSON.stringify(data.data));
+    console.log('response1 status', JSON.stringify(response.status));
+    console.log('response1 data', JSON.stringify(response.data));
+
+    const access_token = response.data.access_token;
+    console.log('access_token', access_token);
+
+    const response2 = await firstValueFrom(
+      this.httpService.post('https://id.vk.com/oauth2/auth', {
+        client_id: process.env.CLIENT_ID,
+        id_token: access_token,
+      }),
+    );
+
+    console.log('response2 status', JSON.stringify(response2.status));
+    console.log('response2 data', JSON.stringify(response2.data));
   }
 }
