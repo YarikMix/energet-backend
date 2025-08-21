@@ -99,7 +99,8 @@ export class AuthController {
     );
 
     console.log('user_info.status', response2.status);
-    console.log('user_info.data', JSON.stringify(response2.data));
+    console.log('user_info.data.user', JSON.stringify(response2.data.user));
+    console.log('user_info.data.user.email', response2.data.user.email);
 
     const result = await this.authService.register(
       {
