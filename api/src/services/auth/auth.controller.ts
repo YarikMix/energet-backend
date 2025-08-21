@@ -101,13 +101,16 @@ export class AuthController {
     console.log('user_info.status', response2.status);
     console.log('user_info.data', JSON.stringify(response2.data));
 
-    const result = await this.authService.register({
-      name: response2.data.first_name,
-      phone: faker.phone.number(),
-      email: response2.data.email,
-      role: E_UserType.Buyer,
-      password: faker.internet.password(),
-    });
+    const result = await this.authService.register(
+      {
+        name: response2.data.first_name,
+        phone: faker.phone.number(),
+        email: response2.data.email,
+        role: E_UserType.Buyer,
+        password: faker.internet.password(),
+      },
+      true,
+    );
     console.log('result.user', JSON.stringify(result.user));
     delete result.user.password;
     res.cookie('access_token', result.token, {

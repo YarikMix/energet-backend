@@ -1,10 +1,10 @@
+import { User } from '@entities/user/models/user.entity';
+import { UsersService } from '@entities/user/service/user.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { AuthPayload } from '@services/auth/types/AuthPayload';
 import * as bcrypt from 'bcrypt';
 import { RegisterRequestDto } from './dtos/register-request.dto';
-import { UsersService } from '@entities/user/service/user.service';
-import { User } from '@entities/user/models/user.entity';
-import { AuthPayload } from '@services/auth/types/AuthPayload';
 
 @Injectable()
 export class AuthService {
@@ -35,11 +35,18 @@ export class AuthService {
     };
   }
 
-  async register(userRegisterInfo: RegisterRequestDto): Promise<AuthPayload> {
+  async register(
+    userRegisterInfo: RegisterRequestDto,
+    vk = false,
+  ): Promise<AuthPayload> {
     const existingUser = await this.usersService.findOneByEmail(
       userRegisterInfo.email,
     );
     if (existingUser) {
+      console.log('email already exists', JSON.stringify(existingUser));
+      if (vk) {
+        return this.authVKUser(existingUser.email);
+      }
       throw new BadRequestException('email already exists');
     }
 
@@ -58,6 +65,17 @@ export class AuthService {
     return {
       user: newUser,
       token: token,
+    };
+  }
+
+  async authVKUser(email: string): Promise<AuthPayload> {
+    const userInfo = await this.usersService.findOneByEmail(email);
+
+    const payload = { email: userInfo.email, id: userInfo.id };
+    delete userInfo.password;
+    return {
+      user: userInfo,
+      token: this.jwtService.sign(payload),
     };
   }
 
