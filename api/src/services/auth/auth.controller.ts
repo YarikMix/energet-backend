@@ -17,6 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from '@services/auth/decorators/user.decorator';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
+import { getFaker } from '../../utils/helpers';
 import { Public } from './decorators/public.decorator';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 
@@ -88,9 +89,7 @@ export class AuthController {
       }),
     );
 
-    console.log('auth.data', JSON.stringify(response.data));
     const access_token = response.data.access_token;
-    console.log('access_token', access_token);
     const response2 = await firstValueFrom(
       this.httpService.post('https://id.vk.com/oauth2/user_info', {
         client_id: process.env.CLIENT_ID,
@@ -98,21 +97,17 @@ export class AuthController {
       }),
     );
 
-    console.log('user_info.status', response2.status);
-    console.log('user_info.data.user', JSON.stringify(response2.data.user));
-    console.log('user_info.data.user.email', response2.data.user.email);
-
     const result = await this.authService.register(
       {
         name: response2.data.user.first_name,
-        phone: faker.phone.number(),
+        phone: getFaker().phone.number({ style: 'international' }),
         email: response2.data.user.email,
         role: E_UserType.Buyer,
         password: faker.internet.password(),
       },
       true,
     );
-    console.log('result.user', JSON.stringify(result.user));
+
     delete result.user.password;
     res.cookie('access_token', result.token, {
       httpOnly: true,
@@ -120,6 +115,7 @@ export class AuthController {
       sameSite: 'lax',
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
+
     res.status(HttpStatus.OK).send(result.user);
   }
 }

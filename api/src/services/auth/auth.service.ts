@@ -39,13 +39,10 @@ export class AuthService {
     userRegisterInfo: RegisterRequestDto,
     vk = false,
   ): Promise<AuthPayload> {
-    console.log('register');
-    console.log('email', userRegisterInfo.email);
     const existingUser = await this.usersService.findOneByEmail(
       userRegisterInfo.email,
     );
     if (existingUser) {
-      console.log('email already exists', JSON.stringify(existingUser));
       if (vk) {
         return this.authVKUser(existingUser.email);
       }

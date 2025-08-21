@@ -1,3 +1,5 @@
+import { Faker, ru } from '@faker-js/faker';
+
 export const isNumeric = (num) => {
   return !isNaN(num);
 };
@@ -10,3 +12,8 @@ export const generateRandomInt = (min, max) => {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+export const getFaker = () =>
+  new Faker({
+    locale: [ru],
+  });
