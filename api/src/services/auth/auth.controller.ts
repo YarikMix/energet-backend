@@ -97,6 +97,7 @@ export class AuthController {
       }),
     );
 
+    //asdfasdf
     const result = await this.authService.register(
       {
         name: response2.data.user.first_name,
