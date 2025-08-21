@@ -3,11 +3,12 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
-dotenv.config({ path: process.cwd() + `/.${process.env.NODE_ENV}.env` });
+dotenv.config({ path: process.cwd() + `/.env.${process.env.NODE_ENV}` });
 
-export default registerAs(
-  'dbconfig.dev',
-  (): PostgresConnectionOptions => ({
+export default registerAs('dbconfig.dev', (): PostgresConnectionOptions => {
+  console.log('registerAs db config');
+  console.log(process.env);
+  return {
     type: 'postgres',
     host: process.env.POSTGRES_HOST,
     port: parseInt(process.env.POSTGRES_PORT),
@@ -18,5 +19,5 @@ export default registerAs(
     entities: [
       path.resolve(__dirname, '..') + '/**/**/models/*.entity{.ts,.js}',
     ],
-  }),
-);
+  };
+});

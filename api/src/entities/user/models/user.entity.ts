@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { E_UserType } from '@entities/user/models/types';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -17,6 +17,9 @@ export class User {
 
   @Column({ name: 'phone', type: 'varchar' })
   phone: string;
+
+  @Column({ name: 'foreign', type: 'boolean', default: false })
+  foreign: boolean;
 
   @Column({
     name: 'role',

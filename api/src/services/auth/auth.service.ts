@@ -25,12 +25,17 @@ export class AuthService {
     return user;
   }
 
-  async login(user: User): Promise<AuthPayload> {
-    const payload = { email: user.email, id: user.id };
-    const userInfo = await this.usersService.findOneByEmail(user.email);
-    delete userInfo.password;
+  async login(userInfo: User): Promise<AuthPayload> {
+    const payload = { email: userInfo.email, id: userInfo.id };
+    const user = await this.usersService.findOneByEmail(userInfo.email, false);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    delete user.password;
     return {
-      user: userInfo,
+      user,
       token: this.jwtService.sign(payload),
     };
   }
@@ -53,6 +58,7 @@ export class AuthService {
     const newUserInfo: User = {
       ...userRegisterInfo,
       password: hashedPassword,
+      foreign: vk,
     } as User;
 
     const newUser = await this.usersService.create(newUserInfo);
@@ -79,8 +85,11 @@ export class AuthService {
   }
 
   async getUserInfo(email: string): Promise<User> {
-    const userInfo = await this.usersService.findOneByEmail(email);
-    delete userInfo.password;
-    return userInfo;
+    const user = await this.usersService.findOneByEmail(email);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    delete user.password;
+    return user;
   }
 }

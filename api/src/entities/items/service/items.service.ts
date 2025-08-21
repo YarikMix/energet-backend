@@ -86,28 +86,30 @@ export class ItemsService {
 
     if (userId) {
       const user = await this.userRepository.findOneBy({ id: userId });
-      if (user.role != E_UserType.Buyer) {
-        if (user.role == E_UserType.Producer) {
-          filters['owner'] = Equal(userId);
-        }
+      if (user) {
+        if (user.role != E_UserType.Buyer) {
+          if (user.role == E_UserType.Producer) {
+            filters['owner'] = Equal(userId);
+          }
 
-        const items = await this.itemRepository.find({
-          relations: ['owner', 'item_type', 'item_producer'],
-          select: {
-            owner: {
-              id: true,
-              name: true,
+          const items = await this.itemRepository.find({
+            relations: ['owner', 'item_type', 'item_producer'],
+            select: {
+              owner: {
+                id: true,
+                name: true,
+              },
             },
-          },
-          where: filters,
-          order: {
-            id: 'ASC',
-          },
-        } as FindManyOptions<Item>);
+            where: filters,
+            order: {
+              id: 'ASC',
+            },
+          } as FindManyOptions<Item>);
 
-        return {
-          items,
-        };
+          return {
+            items,
+          };
+        }
       }
     }
 
@@ -126,7 +128,7 @@ export class ItemsService {
 
     if (userId) {
       const user = await this.userRepository.findOneBy({ id: userId });
-      if (user.role == E_UserType.Buyer) {
+      if (user && user.role == E_UserType.Buyer) {
         items = await Promise.all(
           items.map(async (item) => {
             const favourite = await this.favouriteRepository.exists({

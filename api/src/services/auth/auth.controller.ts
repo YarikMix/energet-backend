@@ -77,32 +77,30 @@ export class AuthController {
 
   @Post('/vk')
   async authVK(@Res({ passthrough: true }) res, @Req() req) {
+    // const response = await firstValueFrom(
+    //   this.httpService.post('https://id.vk.com/oauth2/auth', {
+    //     grant_type: 'authorization_code',
+    //     code_verifier: 'codeVerifier',
+    //     client_id: process.env.VK_ID_CLIENT_ID,
+    //     device_id: req.body.deviceId,
+    //     redirect_uri: process.env.VK_ID_REDIRECT_URL,
+    //     code: req.body.code,
+    //     scope: 'phone',
+    //   }),
+    // );
+    const access_token = req.body.access_token;
     const response = await firstValueFrom(
-      this.httpService.post('https://id.vk.com/oauth2/auth', {
-        grant_type: 'authorization_code',
-        code_verifier: 'codeVerifier',
-        client_id: process.env.CLIENT_ID,
-        device_id: req.body.deviceId,
-        redirect_uri: process.env.REDIRECT_URI,
-        code: req.body.code,
-        scope: 'phone',
-      }),
-    );
-
-    const access_token = response.data.access_token;
-    const response2 = await firstValueFrom(
       this.httpService.post('https://id.vk.com/oauth2/user_info', {
-        client_id: process.env.CLIENT_ID,
+        client_id: process.env.VK_ID_CLIENT_ID,
         access_token,
       }),
     );
 
-    //asdfasdf
     const result = await this.authService.register(
       {
-        name: response2.data.user.first_name,
+        name: response.data.user.first_name,
         phone: getFaker().phone.number({ style: 'international' }),
-        email: response2.data.user.email,
+        email: response.data.user.email,
         role: E_UserType.Buyer,
         password: faker.internet.password(),
       },
