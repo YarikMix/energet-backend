@@ -103,9 +103,9 @@ export class AuthController {
 
     const result = await this.authService.register(
       {
-        name: response2.data.first_name,
+        name: response2.data.user.first_name,
         phone: faker.phone.number(),
-        email: response2.data.email,
+        email: response2.data.user.email,
         role: E_UserType.Buyer,
         password: faker.internet.password(),
       },
