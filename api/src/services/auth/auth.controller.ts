@@ -87,11 +87,13 @@ export class AuthController {
     );
 
     const access_token = response.data.access_token;
-    await firstValueFrom(
+    const response2 = await firstValueFrom(
       this.httpService.post('https://id.vk.com/oauth2/user_info', {
         client_id: process.env.CLIENT_ID,
         access_token,
       }),
     );
+
+    res.status(HttpStatus.OK).send(response2.data);
   }
 }
