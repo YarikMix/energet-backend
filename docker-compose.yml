@@ -109,8 +109,6 @@ services:
         condition: service_started
     networks:
       - energet-network
-    profiles:
-      - "production"
 
   telegram-notifier:
     env_file:
@@ -124,8 +122,6 @@ services:
       TELEGRAM_NOTIFIER_TOPIC_ID: ${TELEGRAM_TOPIC_ID}
     labels:
       telegram-notifier.monitor: false
-    profiles:
-      - "production"
 
 volumes:
   postgres:
