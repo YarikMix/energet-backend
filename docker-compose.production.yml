@@ -115,7 +115,7 @@ services:
 
   telegram-notifier:
     env_file:
-      - .env
+      - .env.production
     image: lorcas/docker-telegram-notifier:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
