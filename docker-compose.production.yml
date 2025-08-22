@@ -10,7 +10,7 @@ services:
       NODE_ENV: development
       PORT: 3000
     volumes:
-      - ./api/src:/app/api/
+      - ./api/src:/app/api/src
     ports:
       - "8000:3000"
     depends_on:
