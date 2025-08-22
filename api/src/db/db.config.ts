@@ -3,6 +3,11 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
+console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+console.log(
+  'process.cwd() + `/.env.${process.env.NODE_ENV}`',
+  process.cwd() + `/.env.${process.env.NODE_ENV}`,
+);
 dotenv.config({ path: process.cwd() + `/.env.${process.env.NODE_ENV}` });
 
 export default registerAs('dbconfig.dev', (): PostgresConnectionOptions => {
