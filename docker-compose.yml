@@ -1,7 +1,5 @@
 services:
   api:
-    env_file:
-      - .env
     build:
       dockerfile: Dockerfile
       context: ./api
@@ -26,8 +24,6 @@ services:
       - energet-network
 
   configurator:
-     env_file:
-      - .env
      build:
        dockerfile: Dockerfile
        context: ./configurator
@@ -43,8 +39,6 @@ services:
        - energet-network
 
   postgres:
-    env_file:
-      - .env
     image: postgres:latest
     environment:
       POSTGRES_DB: ${POSTGRES_DATABASE}
@@ -116,7 +110,7 @@ services:
 
   telegram-notifier:
     env_file:
-      - .env
+      - .env.development
     image: lorcas/docker-telegram-notifier:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
