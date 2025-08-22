@@ -45,6 +45,9 @@ services:
       - .env.production
     image: postgres:latest
     environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGDATA: /data/postgres
     volumes:
        - postgres:/var/www/postgres/docker-volumes/postgres
@@ -52,7 +55,7 @@ services:
       - "5432:5432"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "sh -c 'pg_isready -U $$POSTGRES_USERNAME -d $$POSTGRES_DATABASE'"]
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DATABASE}'"]
       interval: 5s
       timeout: 5s
       retries: 5
