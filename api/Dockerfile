@@ -16,6 +16,3 @@ RUN npm install
 COPY . .
 
 RUN npm run build
-
-# TODO: А надо вообще?
-EXPOSE 8080
