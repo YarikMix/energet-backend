@@ -51,7 +51,7 @@ services:
       - "5432:5432"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "sh -c 'pg_isready -U $$POSTGRES_USERNAME -d $$POSTGRES_DATABASE'"]
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DATABASE}'"]
       interval: 5s
       timeout: 5s
       retries: 5
