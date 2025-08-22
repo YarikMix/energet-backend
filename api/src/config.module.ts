@@ -7,7 +7,7 @@ const ENV = process.env.NODE_ENV;
   imports: [
     NestConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: !ENV ? '.env.development' : `.env.${ENV}`,
+      envFilePath: !ENV ? '.env' : `.env.${ENV}`,
     }),
   ],
 })
