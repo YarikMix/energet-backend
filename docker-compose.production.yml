@@ -5,7 +5,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./api
-    command: bash -c "npm run seed:dev && npm run start:dev"
+    command: bash -c "npm run seed:prod && npm run start"
     environment:
       NODE_ENV: development
       PORT: 3000
