@@ -17,4 +17,5 @@ COPY . .
 
 RUN npm run build
 
+# TODO: А надо вообще?
 EXPOSE 8080
