@@ -1,5 +1,7 @@
 services:
   api:
+    env_file:
+      - .env.development
     build:
       dockerfile: Dockerfile
       context: ./api
@@ -39,6 +41,8 @@ services:
        - energet-network
 
   postgres:
+    env_file:
+      - .env.development
     image: postgres:latest
     environment:
       POSTGRES_DB: ${POSTGRES_DATABASE}
