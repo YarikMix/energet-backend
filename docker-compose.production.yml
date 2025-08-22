@@ -41,8 +41,6 @@ services:
        - energet-network
 
   postgres:
-    env_file:
-      - .env.production
     image: postgres:latest
     environment:
       POSTGRES_DB: ${POSTGRES_DATABASE}
