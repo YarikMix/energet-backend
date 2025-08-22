@@ -34,8 +34,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/energet/energet-backend/
-            sudo docker compose --profile production -f docker-compose.production.yml down || exit 1
-            sudo docker compose --profile production --env-file .env.production -f docker-compose.production.yml up --build -d || exit 1
+            sudo docker compose -f docker-compose.production.yml down || exit 1
+            sudo docker compose --env-file .env.production -f docker-compose.production.yml up --build -d || exit 1
 
       - name: Send Telegram Message
         if: failure()
