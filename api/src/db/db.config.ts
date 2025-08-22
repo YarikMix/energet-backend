@@ -6,9 +6,6 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 dotenv.config({ path: process.cwd() + `/.env.${process.env.NODE_ENV}` });
 
 export default registerAs('dbconfig.dev', (): PostgresConnectionOptions => {
-  console.log('registerAs db config');
-  console.log(process.env);
-  console.log(process.env.POSTGRES_USERNAME);
   return {
     type: 'postgres',
     host: process.env.POSTGRES_HOST,
