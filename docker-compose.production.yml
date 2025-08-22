@@ -1,7 +1,7 @@
 services:
   api:
     env_file:
-      - .env
+      - .env.production
     build:
       dockerfile: Dockerfile
       context: ./api
@@ -27,7 +27,7 @@ services:
 
   configurator:
      env_file:
-      - .env
+      - .env.production
      build:
        dockerfile: Dockerfile
        context: ./configurator
@@ -44,7 +44,7 @@ services:
 
   postgres:
     env_file:
-      - .env
+      - .env.production
     image: postgres:latest
     environment:
       POSTGRES_DB: ${POSTGRES_DATABASE}
