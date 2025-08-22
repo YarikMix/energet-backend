@@ -19,8 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prettier": "prettier --write \"**/*.ts\"",
-    "seed:dev": "ts-node --env-file=.env.development -r tsconfig-paths/register ./src/seeding/seed.ts",
-    "seed:prod": "ts-node --env-file=../.env.production -r tsconfig-paths/register ./src/seeding/seed.ts"
+    "seed:dev": "ts-node --env-file=./../.env.development -r tsconfig-paths/register ./src/seeding/seed.ts",
+    "seed:prod": "ts-node --env-file=./../.env.production -r tsconfig-paths/register ./src/seeding/seed.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^9.5.0",
