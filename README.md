@@ -12,8 +12,15 @@
 
 ### Запуск
 
+#### Локальная сборка
 ```
-docker-compose up --build
+docker-compose --env-file .env.development up --build -d
 ```
 
-* Перед запуском приложения происходит очистка бд и затем заполнение моковыми данными
+#### Продовая сборки
+
+```
+docker compose --env-file .env.production -f docker-compose.production.yml up --build -d
+```
+
+* Перед каждым запуском приложения происходит очистка бд и затем заполнение моковыми данными
