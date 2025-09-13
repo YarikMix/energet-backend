@@ -100,6 +100,7 @@ export class MainSeeder implements Seeder {
     const testBuyer = await userFactory.make({
       email: 'user@user.com',
       role: E_UserType.Buyer,
+      password: '1234',
     });
     await usersRepo.save(testBuyer);
 

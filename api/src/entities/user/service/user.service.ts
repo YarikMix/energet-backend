@@ -56,9 +56,15 @@ export class UsersService {
     return await this.userRepository.delete(id);
   }
 
-  public async findOneByEmail(email: string, includeForeign = true) {
+  public async findOneByEmail(email: string) {
     return await this.userRepository.findOne({
-      where: [{ email: email, foreign: includeForeign }],
+      where: [{ email: email }],
+    });
+  }
+
+  public async findOneByEmailForeign(email: string, foreign: boolean) {
+    return await this.userRepository.findOne({
+      where: [{ email: email, foreign }],
     });
   }
 }

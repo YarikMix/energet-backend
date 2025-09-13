@@ -27,7 +27,10 @@ export class AuthService {
 
   async login(userInfo: User): Promise<AuthPayload> {
     const payload = { email: userInfo.email, id: userInfo.id };
-    const user = await this.usersService.findOneByEmail(userInfo.email, false);
+    const user = await this.usersService.findOneByEmailForeign(
+      userInfo.email,
+      false,
+    );
 
     if (!user) {
       throw new BadRequestException('User not found');
@@ -74,7 +77,7 @@ export class AuthService {
   }
 
   async authVKUser(email: string): Promise<AuthPayload> {
-    const userInfo = await this.usersService.findOneByEmail(email);
+    const userInfo = await this.usersService.findOneByEmailForeign(email, true);
 
     const payload = { email: userInfo.email, id: userInfo.id };
     delete userInfo.password;
