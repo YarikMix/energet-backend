@@ -100,8 +100,8 @@ export class MainSeeder implements Seeder {
     const testBuyer = await userFactory.make({
       email: 'user@user.com',
       role: E_UserType.Buyer,
-      password: '1234',
     });
+    testBuyer.password = '1234';
     await usersRepo.save(testBuyer);
 
     const users = await userFactory.saveMany(USERS_COUNT);
@@ -111,6 +111,7 @@ export class MainSeeder implements Seeder {
       email: 'user2@user.com',
       role: E_UserType.Producer,
     });
+    testProducer.password = '1234';
     await usersRepo.save(testProducer);
 
     const producers = await userFactory.saveMany(PRODUCERS_COUNT, {
