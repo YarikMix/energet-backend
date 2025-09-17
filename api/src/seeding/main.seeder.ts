@@ -112,7 +112,7 @@ export class MainSeeder implements Seeder {
       email: 'user2@user.com',
       role: E_UserType.Producer,
     });
-    testProducer.password = '1234';
+    testProducer.password = await bcrypt.hash('1234', 10);
     await usersRepo.save(testProducer);
 
     const producers = await userFactory.saveMany(PRODUCERS_COUNT, {
