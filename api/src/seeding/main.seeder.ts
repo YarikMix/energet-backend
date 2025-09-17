@@ -10,6 +10,7 @@ import { E_UserType } from '@entities/user/models/types';
 import { User } from '@entities/user/models/user.entity';
 import { faker } from '@faker-js/faker';
 import { MinioService } from '@services/minio/minio.service';
+import * as bcrypt from 'bcrypt';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import {
@@ -101,7 +102,7 @@ export class MainSeeder implements Seeder {
       email: 'user@user.com',
       role: E_UserType.Buyer,
     });
-    testBuyer.password = '1234';
+    testBuyer.password = await bcrypt.hash('1234', 10);
     await usersRepo.save(testBuyer);
 
     const users = await userFactory.saveMany(USERS_COUNT);
